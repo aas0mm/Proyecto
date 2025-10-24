@@ -84,7 +84,7 @@ int es_movimiento_valido(int f_origen, int c_origen, int f_destino, int c_destin
 }
 
 void aplicar_movimiento(int f_origen, int c_origen, int f_destino, int c_destino) {
-    int f_medio = (f_origen + f_destino) / 2;
+    int f_medio = (f_origen + f_destino) / 2; //definimos la posicion que esta en medio de la posicion original y la posicion de destino
     int c_medio = (c_origen + c_destino) / 2;
 
     tablero_fichas[f_origen][c_origen] = 0;
