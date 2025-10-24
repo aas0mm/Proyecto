@@ -1,7 +1,3 @@
-//  Autores: Consuelo Arriagada y Antonia Orellana
-//  Programacion Seccion 2
-//  23 al 27 de octubre de 2025
-
 #include <stdio.h>
 #include <string.h>
 
@@ -13,7 +9,6 @@ typedef struct {
 } Movimiento;
 
 //Declaracion de funciones (no estan completas)
-void mostrar_tablero(); // solo para verificar que esta bien
 int es_movimiento_valido(int, int, int, int); //verifica si un movimiento es valido (esta dentro de los limites del tablero)
 void aplicar_movimiento(int, int, int, int); //genera movimientos en el tablero
 void deshacer_movimiento(int, int, int, int); //revierte un movimiento cuando no existen mas movimientos validos
@@ -29,20 +24,11 @@ int cantidad_movimientos = 0;
 int main() {
     //Leer la forma del tablero
     int i, j;
-    char linea[DIM + 2]; // +2 para '\n' y '\0'
-
     for (i = 0; i < DIM; i++) {
-        fgets(linea, sizeof(linea), stdin);
         for (j = 0; j < DIM; j++) {
-            tablero[i][j] = linea[j];
-            if (tablero[i][j] == ' ') {
-                tablero[i][j] = 'X'; // Casilla central
-            }
+            scanf(" %c", &tablero[i][j]); // nota el espacio antes de %c
         }
     }
-
-
-    mostrar_tablero();
 
     //Inicializar fichas en el tablero
     for (i = 0; i < DIM; i++) {
@@ -61,7 +47,7 @@ int main() {
     if (resolver()) {
         printf("En %d movimientos se encontro la solucion\n", cantidad_movimientos);
         for (i = 0; i < cantidad_movimientos; i++) {
-            printf("%d: posicion <%d, %d> a posicion <%d, %d>\n", i + 1, movimientos[i].fila_origen + 1, movimientos[i].columna_origen + 1, movimientos[i].fila_destino + 1, movimientos[i].columna_destino + 1);
+            printf("%d: posicion <%d, %d> a posicion <%d, %d>\n", i + 1, movimientos[i].fila_origen + 1, movimientos[i].columna_origen + 1, movimientos[i].fila_destino, movimientos[i].columna_destino);
         }
     }
     else {
@@ -69,15 +55,6 @@ int main() {
     }
 
     return 0;
-}
-
-void mostrar_tablero() {
-    for (int i = 0; i < DIM; i++) {
-        for (int j = 0; j < DIM; j++) {
-            printf("%c", tablero[i][j]);
-        }
-        printf("\n");
-    }
 }
 
 int es_movimiento_valido(int f1, int c1, int f2, int c2) {

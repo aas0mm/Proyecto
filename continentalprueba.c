@@ -1,6 +1,4 @@
-//  Autores: Consuelo Arriagada y Antonia Orellana
-//  Programacion Seccion 2
-//  23 al 27 de octubre de 2025
+//  Programa creado por copilot
 
 #include <stdio.h>
 #include <string.h>
@@ -29,18 +27,14 @@ int cantidad_movimientos = 0;
 int main() {
     //Leer la forma del tablero
     int i, j;
-    char linea[DIM + 2]; // +2 para '\n' y '\0'
-
     for (i = 0; i < DIM; i++) {
-        fgets(linea, sizeof(linea), stdin);
         for (j = 0; j < DIM; j++) {
-            tablero[i][j] = linea[j];
+            scanf(" %c", &tablero[i][j]);
             if (tablero[i][j] == ' ') {
-                tablero[i][j] = 'X'; // Casilla central
+                tablero[i][j] = 'X'; //Transformamos la casilla central en X internamente para que funcione la estructura del programa que diferencia entre O y X solamente
             }
         }
     }
-
 
     mostrar_tablero();
 

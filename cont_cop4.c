@@ -1,7 +1,3 @@
-//  Autores: Consuelo Arriagada y Antonia Orellana
-//  Programacion Seccion 2
-//  23 al 27 de octubre de 2025
-
 #include <stdio.h>
 #include <string.h>
 
