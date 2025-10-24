@@ -8,7 +8,6 @@ typedef struct {
     int fila_destino, columna_destino;
 } Movimiento;
 
-//Declaracion de funciones (no estan completas)
 void mostrar_tablero(); // solo para verificar que esta bien
 int es_movimiento_valido(int, int, int, int); //verifica si un movimiento es valido (esta dentro de los limites del tablero)
 void aplicar_movimiento(int, int, int, int); //genera movimientos en el tablero

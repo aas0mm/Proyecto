@@ -5,48 +5,44 @@
 #include <stdio.h>
 #include <string.h>
 
-#define DIM 7 // Dimensiones del tablero
+#define DIMENSION 7 // Dimensiones del tablero (7x7)
 
 typedef struct {
-    int fila_origen, columna_origen;
+    int fila_origen, columna_origen;        
     int fila_destino, columna_destino;
 } Movimiento;
 
-//Declaracion de funciones (no estan completas)
-//void mostrar_tablero(); solo para verificar que esta bien
+//Declaracion de funciones
 int es_movimiento_valido(int, int, int, int); //verifica si un movimiento es valido (esta dentro de los limites del tablero)
-void aplicar_movimiento(int, int, int, int); //genera movimientos en el tablero
+void aplicar_movimiento(int, int, int, int); //genera movimientos en el tablero y actualiza el estado de las fichas
 void deshacer_movimiento(int, int, int, int); //revierte un movimiento cuando no existen mas movimientos validos
 int contar_fichas(); // para contar cuantas fichas hay en el tablero
-int resolver();
+int resolver(); //busca la solucion del solitario
 
 //Variables globales
-char tablero[DIM][DIM]; // Para definir 'X' como casilla valida y 'O' como casilla invalida
-int tablero_fichas[DIM][DIM]; // 1 = espacio con ficha, 0 = espacio vacio
-Movimiento movimientos[32]; //Maximo de movimientos posibles
-int cantidad_movimientos = 0;
+char tablero[DIMENSION][DIMENSION]; // Para definir 'X' como casilla valida y 'O' como casilla invalida
+int tablero_fichas[DIMENSION][DIMENSION]; // Define el estado de las casillas del tablero,  1 = espacio con ficha, 0 = espacio vacio
+Movimiento movimientos[32]; //Almacena los movimientos realizados
+int cantidad_movimientos = 0; //contador
 
 int main() {
-    //Leer la forma del tablero
+    //Leemos la forma del tablero
     int i, j;
-    char linea[DIM + 2]; // +2 para '\n' y '\0'
+    char linea[DIMENSION + 2]; // +2 para '\n' y '\0'
 
-    for (i = 0; i < DIM; i++) {
+    for (i = 0; i < DIMENSION; i++) {
         fgets(linea, sizeof(linea), stdin);
-        for (j = 0; j < DIM; j++) {
+        for (j = 0; j < DIMENSION; j++) {
             tablero[i][j] = linea[j];
             if (tablero[i][j] == ' ') {
-                tablero[i][j] = 'X'; // Casilla central
+                tablero[i][j] = 'X'; // Tomamos el espacio de la casilla central como valida al leer la entrada de datos transformandola en 'X'
             }
         }
     }
 
-
-    //mostrar_tablero();
-
-    //Inicializar fichas en el tablero
-    for (i = 0; i < DIM; i++) {
-        for (j = 0; j < DIM; j++) {
+    //Inicializamos fichas en el tablero
+    for (i = 0; i < DIMENSION; i++) {
+        for (j = 0; j < DIMENSION; j++) {
             if (tablero[i][j] == 'X') {
                 tablero_fichas[i][j] = 1;
             }
@@ -55,8 +51,7 @@ int main() {
             }
         }
     }
-
-    tablero_fichas[3][3] = 0;
+    tablero_fichas[3][3] = 0; //casilla central (sin ficha)
 
     if (resolver()) {
         printf("En %d movimientos se encontro la solucion\n", cantidad_movimientos);
@@ -71,65 +66,56 @@ int main() {
     return 0;
 }
 
-/*void mostrar_tablero() {
-    for (int i = 0; i < DIM; i++) {
-        for (int j = 0; j < DIM; j++) {
-            printf("%c", tablero[i][j]);
-        }
-        printf("\n");
-    }
-}*/
+int es_movimiento_valido(int f_origen, int c_origen, int f_destino, int c_destino) {
+    int f_medio = (f_origen + f_destino) / 2;
+    int c_medio = (c_origen + c_destino) / 2;
 
-int es_movimiento_valido(int f1, int c1, int f2, int c2) {
-    int f_medio = (f1 + f2) / 2;
-    int c_medio = (c1 + c2) / 2;
-
-    if (f2 < 0 || f2 >= DIM || c2 < 0 || c2 >= DIM) {
+    if (f_destino < 0 || f_destino >= DIMENSION || c_destino < 0 || c_destino >= DIMENSION) {
         return 0;
     }
-    if (tablero[f1][c1] != 'X' || tablero[f_medio][c_medio] != 'X' || tablero[f2][c2] != 'X') {
+    if (tablero[f_origen][c_origen] != 'X' || tablero[f_medio][c_medio] != 'X' || tablero[f_destino][c_destino] != 'X') {
         return 0;
     }
-    if (tablero_fichas[f1][c1] != 1 || tablero_fichas[f_medio][c_medio] != 1 || tablero_fichas[f2][c2] != 0) {
+    if (tablero_fichas[f_origen][c_origen] != 1 || tablero_fichas[f_medio][c_medio] != 1 || tablero_fichas[f_destino][c_destino] != 0) {
         return 0;
     }
 
     return 1;
 }
 
-void aplicar_movimiento(int f1, int c1, int f2, int c2) {
-    int f_medio = (f1 + f2) / 2;
-    int c_medio = (c1 + c2) / 2;
+void aplicar_movimiento(int f_origen, int c_origen, int f_destino, int c_destino) {
+    int f_medio = (f_origen + f_destino) / 2;
+    int c_medio = (c_origen + c_destino) / 2;
 
-    tablero_fichas[f1][c1] = 0;
+    tablero_fichas[f_origen][c_origen] = 0;
     tablero_fichas[f_medio][c_medio] = 0;
-    tablero_fichas[f2][c2] = 1;
+    tablero_fichas[f_destino][c_destino] = 1;
 
     Movimiento nuevo_movimiento;
-    nuevo_movimiento.fila_origen = f1;
-    nuevo_movimiento.columna_origen = c1;
-    nuevo_movimiento.fila_destino = f2;
-    nuevo_movimiento.columna_destino = c2;
+    nuevo_movimiento.fila_origen = f_origen;
+    nuevo_movimiento.columna_origen = c_origen;
+    nuevo_movimiento.fila_destino = f_destino;
+    nuevo_movimiento.columna_destino = c_destino;
 
     movimientos[cantidad_movimientos] = nuevo_movimiento;
     cantidad_movimientos++;
 }
 
-void deshacer_movimiento(int f1, int c1, int f2, int c2) {
-    int f_medio = (f1 + f2) / 2;
-    int c_medio = (c1 + c2) / 2;
+void deshacer_movimiento(int f_origen, int c_origen, int f_destino, int c_destino) {
+    int f_medio = (f_origen + f_destino) / 2;
+    int c_medio = (c_origen + c_destino) / 2;
 
-    tablero_fichas[f1][c1] = 1;
+    tablero_fichas[f_origen][c_origen] = 1;
     tablero_fichas[f_medio][c_medio] = 1;
-    tablero_fichas[f2][c2] = 0;
+    tablero_fichas[f_destino][c_destino] = 0;
 
     cantidad_movimientos--;
 }
 
 int contar_fichas() {
     int contador = 0, i, j;
-    for (i = 0; i < DIM; i++) {
-        for (j = 0; j < DIM; j++) {
+    for (i = 0; i < DIMENSION; i++) {
+        for (j = 0; j < DIMENSION; j++) {
             if (tablero_fichas[i][j] == 1) {
                 contador++;
             }
@@ -143,23 +129,23 @@ int resolver() {
         return 1;
     }
     
-    int f, c;
-    for (f = 0; f < DIM; f++) {
-        for (c = 0; c < DIM; c++) {
+    int fila, col;
+    for (fila = 0; fila < DIMENSION; fila++) {
+        for (col = 0; col < DIMENSION; col++) {
             int desplazamientos_fila[4] = {-2, 2, 0, 0};
             int desplazamientos_columna[4] = {0, 0, -2, 2};
 
             int d;
             for (d = 0; d < 4; d++) {
-                int nueva_fila = f + desplazamientos_fila[d];
-                int nueva_columna = c + desplazamientos_columna[d];
+                int nueva_fila = fila + desplazamientos_fila[d];
+                int nueva_columna = col + desplazamientos_columna[d];
 
-                if (es_movimiento_valido(f, c, nueva_fila, nueva_columna)) {
-                    aplicar_movimiento(f, c, nueva_fila, nueva_columna);
+                if (es_movimiento_valido(fila, col, nueva_fila, nueva_columna)) {
+                    aplicar_movimiento(fila, col, nueva_fila, nueva_columna);
                     if (resolver()) {
                         return 1;
                     }
-                    deshacer_movimiento(f, c, nueva_fila, nueva_columna);
+                    deshacer_movimiento(fila, col, nueva_fila, nueva_columna);
                 }
             }
         }
