@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define DIMENSION 7 // Dimensiones del tablero (7x7)
+#define DIMENSION 8 // Dimensiones del tablero (7x7)
 
 typedef struct {
     int fila_origen, columna_origen;        
@@ -31,18 +31,25 @@ int main() {
     char linea[DIMENSION + 2]; // +2 para '\n' y '\0'
 
     for (i = 0; i < DIMENSION; i++) {
-        fgets(linea, sizeof(linea), stdin);
         for (j = 0; j < DIMENSION; j++) {
-            tablero[i][j] = linea[j];
-            if (tablero[i][j] == ' ') {
-                tablero[i][j] = 'X'; // Tomamos el espacio de la casilla central como valida al leer la entrada de datos transformandola en 'X'
-            }
+            tablero[0][j] = 'O';
         }
+        tablero[i][0] = 'O';
     }
 
+    for (i = 1; i < DIMENSION; i++) {
+        fgets(linea, sizeof(linea), stdin);
+        for (j = 1; j < DIMENSION; j++) {
+            tablero[i][j] = linea[j - 1]; // leer desde linea[0] en adelante
+            if (tablero[i][j] == ' ') {
+                tablero[i][j] = 'X'; // Casilla central
+            }
+        }
+    }   
+
     //Inicializamos fichas en el tablero
-    for (i = 0; i < DIMENSION; i++) {
-        for (j = 0; j < DIMENSION; j++) {
+    for (i = 1; i < DIMENSION; i++) {
+        for (j = 1; j < DIMENSION; j++) {
             if (tablero[i][j] == 'X') {
                 tablero_fichas[i][j] = 1;
             }
@@ -51,12 +58,12 @@ int main() {
             }
         }
     }
-    tablero_fichas[3][3] = 0; //casilla central (sin ficha)
+    tablero_fichas[4][4] = 0; //casilla central (sin ficha)
 
     if (resolver()) {
         printf("En %d movimientos se encontro la solucion\n", cantidad_movimientos);
         for (i = 0; i < cantidad_movimientos; i++) {
-            printf("%d: posicion <%d, %d> a posicion <%d, %d>\n", i + 1, movimientos[i].fila_origen + 1, movimientos[i].columna_origen + 1, movimientos[i].fila_destino + 1, movimientos[i].columna_destino + 1);
+            printf("%d: posicion <%d, %d> a posicion <%d, %d>\n", i + 1, movimientos[i].fila_origen, movimientos[i].columna_origen, movimientos[i].fila_destino, movimientos[i].columna_destino);
         }
     }
     else {
@@ -70,7 +77,7 @@ int es_movimiento_valido(int f_origen, int c_origen, int f_destino, int c_destin
     int f_medio = (f_origen + f_destino) / 2;
     int c_medio = (c_origen + c_destino) / 2;
 
-    if (f_destino < 0 || f_destino >= DIMENSION || c_destino < 0 || c_destino >= DIMENSION) {
+    if (f_destino < 1 || f_destino >= DIMENSION || c_destino < 1 || c_destino >= DIMENSION) {
         return 0;
     }
     if (tablero[f_origen][c_origen] != 'X' || tablero[f_medio][c_medio] != 'X' || tablero[f_destino][c_destino] != 'X') {
@@ -114,8 +121,8 @@ void deshacer_movimiento(int f_origen, int c_origen, int f_destino, int c_destin
 
 int contar_fichas() {
     int contador = 0, i, j;
-    for (i = 0; i < DIMENSION; i++) {
-        for (j = 0; j < DIMENSION; j++) {
+    for (i = 1; i < DIMENSION; i++) {
+        for (j = 1; j < DIMENSION; j++) {
             if (tablero_fichas[i][j] == 1) {
                 contador++;
             }
@@ -125,13 +132,13 @@ int contar_fichas() {
 }
 
 int resolver() {
-    if (contar_fichas() == 1 && tablero_fichas[3][3] == 1) {
+    if (contar_fichas() == 1 && tablero_fichas[4][4] == 1) {
         return 1;
     }
     
     int fila, col;
-    for (fila = 0; fila < DIMENSION; fila++) {
-        for (col = 0; col < DIMENSION; col++) {
+    for (fila = 1; fila < DIMENSION; fila++) {
+        for (col = 1; col < DIMENSION; col++) {
             int desplazamientos_fila[4] = {-2, 2, 0, 0};
             int desplazamientos_columna[4] = {0, 0, -2, 2};
 
