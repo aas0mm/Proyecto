@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define DIM 7 // Dimensiones del tablero
+#define DIM 8 // Dimensiones del tablero para ingresarlo desde la posicion (1,1)
 
 typedef struct {
     int fila_origen, columna_origen;
@@ -27,21 +27,27 @@ int main() {
     char linea[DIM + 2]; // +2 para '\n' y '\0'
 
     for (i = 0; i < DIM; i++) {
-        fgets(linea, sizeof(linea), stdin);
         for (j = 0; j < DIM; j++) {
-            tablero[i][j] = linea[j];
+            tablero[0][j] = 'O';
+        }
+        tablero[i][0] = 'O';
+    }
+
+    for (i = 1; i < DIM; i++) {
+        fgets(linea, sizeof(linea), stdin);
+        for (j = 1; j < DIM; j++) {
+            tablero[i][j] = linea[j - 1]; // ← leer desde linea[0] en adelante
             if (tablero[i][j] == ' ') {
                 tablero[i][j] = 'X'; // Casilla central
             }
         }
-    }
-
+    }   
 
     mostrar_tablero();
 
     //Inicializar fichas en el tablero
-    for (i = 0; i < DIM; i++) {
-        for (j = 0; j < DIM; j++) {
+    for (i = 1; i < DIM; i++) {
+        for (j = 1; j < DIM; j++) {
             if (tablero[i][j] == 'X') {
                 tablero_fichas[i][j] = 1;
             }
@@ -51,12 +57,12 @@ int main() {
         }
     }
 
-    tablero_fichas[3][3] = 0;
+    tablero_fichas[4][4] = 0;
 
     if (resolver()) {
         printf("En %d movimientos se encontro la solucion\n", cantidad_movimientos);
         for (i = 0; i < cantidad_movimientos; i++) {
-            printf("%d: posicion <%d, %d> a posicion <%d, %d>\n", i + 1, movimientos[i].fila_origen + 1, movimientos[i].columna_origen + 1, movimientos[i].fila_destino + 1, movimientos[i].columna_destino + 1);
+            printf("%d: posicion <%d, %d> a posicion <%d, %d>\n", i + 1, movimientos[i].fila_origen, movimientos[i].columna_origen, movimientos[i].fila_destino, movimientos[i].columna_destino);
         }
     }
     else {
@@ -67,8 +73,8 @@ int main() {
 }
 
 void mostrar_tablero() {
-    for (int i = 0; i < DIM; i++) {
-        for (int j = 0; j < DIM; j++) {
+    for (int i = 1; i < DIM; i++) {
+        for (int j = 1; j < DIM; j++) {
             printf("%c", tablero[i][j]);
         }
         printf("\n");
@@ -134,13 +140,13 @@ int contar_fichas() {
 }
 
 int resolver() {
-    if (contar_fichas() == 1 && tablero_fichas[3][3] == 1) {
+    if (contar_fichas() == 1 && tablero_fichas[4][4] == 1) {
         return 1;
     }
     
     int f, c;
-    for (f = 0; f < DIM; f++) {
-        for (c = 0; c < DIM; c++) {
+    for (f = 1; f < DIM; f++) {
+        for (c = 1; c < DIM; c++) {
             int desplazamientos_fila[4] = {-2, 2, 0, 0};
             int desplazamientos_columna[4] = {0, 0, -2, 2};
 
