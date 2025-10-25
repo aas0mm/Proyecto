@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define DIMENSION 8 // Dimensiones del tablero (7x7)
+#define DIMENSION 8 // Dimensiones del tablero para poder guardarlo desde la posicion (1,1)
 
 typedef struct {
     int fila_origen, columna_origen;        
@@ -16,8 +16,8 @@ typedef struct {
 int es_movimiento_valido(int, int, int, int); //verifica si un movimiento es valido (esta dentro de los limites del tablero)
 void aplicar_movimiento(int, int, int, int); //genera movimientos en el tablero y actualiza el estado de las fichas
 void deshacer_movimiento(int, int, int, int); //revierte un movimiento cuando no existen mas movimientos validos
-int contar_fichas(); // para contar cuantas fichas hay en el tablero
-int resolver(); //busca la solucion del solitario
+int contar_fichas(void); // para contar cuantas fichas hay en el tablero
+int resolver(void); //busca la solucion del solitario
 
 //Variables globales
 char tablero[DIMENSION][DIMENSION]; // Para definir 'X' como casilla valida y 'O' como casilla invalida
@@ -74,7 +74,7 @@ int main() {
 }
 
 int es_movimiento_valido(int f_origen, int c_origen, int f_destino, int c_destino) {
-    int f_medio = (f_origen + f_destino) / 2;
+    int f_medio = (f_origen + f_destino) / 2; //definimos la posicion que esta en medio de la posicion original y la posicion de destino para borrarla cuando se haga el movimiento
     int c_medio = (c_origen + c_destino) / 2;
 
     if (f_destino < 1 || f_destino >= DIMENSION || c_destino < 1 || c_destino >= DIMENSION) {
@@ -91,7 +91,7 @@ int es_movimiento_valido(int f_origen, int c_origen, int f_destino, int c_destin
 }
 
 void aplicar_movimiento(int f_origen, int c_origen, int f_destino, int c_destino) {
-    int f_medio = (f_origen + f_destino) / 2; //definimos la posicion que esta en medio de la posicion original y la posicion de destino
+    int f_medio = (f_origen + f_destino) / 2; 
     int c_medio = (c_origen + c_destino) / 2;
 
     tablero_fichas[f_origen][c_origen] = 0;
@@ -119,7 +119,7 @@ void deshacer_movimiento(int f_origen, int c_origen, int f_destino, int c_destin
     cantidad_movimientos--;
 }
 
-int contar_fichas() {
+int contar_fichas(void) {
     int contador = 0, i, j;
     for (i = 1; i < DIMENSION; i++) {
         for (j = 1; j < DIMENSION; j++) {
@@ -131,7 +131,7 @@ int contar_fichas() {
     return contador;
 }
 
-int resolver() {
+int resolver(void) {
     if (contar_fichas() == 1 && tablero_fichas[4][4] == 1) {
         return 1;
     }
