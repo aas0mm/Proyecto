@@ -49,32 +49,27 @@ int main() {
 
 void leer_tablero(void) {
     int i, j;
-    char c;
-    // Marcar bordes como inválidos
+    char linea[DIMENSION + 2];
+
     for (i = 0; i < DIMENSION; i++) {
         tablero[0][i] = 'O';
         tablero[i][0] = 'O';
     }
 
-    for (i = 1; i <= 7; i++) {
-        j = 1;
-        while (j <= 7) {
-            scanf("%c", &c);
-            if (c == '\n') {
-                continue; //ignora saltos de linea
+    for (i = 1; i < DIMENSION; i++) {
+        fgets(linea, sizeof(linea), stdin);
+        for (j = 1; j < DIMENSION; j++) {
+            tablero[i][j] = linea[j - 1]; // leer desde linea[0] en adelante
+            if (tablero[i][j] == ' ') {
+                tablero[i][j] = 'X'; // Casilla central
             }
-            if (c == ' ') {
-                c = 'X';   // Transformar espacios en 'X'
-            }
-            tablero[i][j] = c;
-            j++;
         }
-    }
+    }   
 }
 
 void inicializar_fichas(void) {
     int i, j;
-
+    
     for (i = 1; i < DIMENSION; i++) {
         for (j = 1; j < DIMENSION; j++) {
             if (tablero[i][j] == 'X') {
@@ -86,7 +81,7 @@ void inicializar_fichas(void) {
         }
     }
 
-    tablero_fichas[4][4] = 0; //casilla central vacia
+    tablero_fichas[4][4] = 0;
 }
 
 int es_movimiento_valido(int f_origen, int c_origen, int f_destino, int c_destino) {

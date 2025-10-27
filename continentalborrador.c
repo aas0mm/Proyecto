@@ -8,7 +8,7 @@ typedef struct {
     int fila_destino, columna_destino;
 } Movimiento;
 
-//void mostrar_tablero(); // solo para verificar que esta bien
+void mostrar_tablero(); // solo para verificar que esta bien
 int es_movimiento_valido(int, int, int, int); //verifica si un movimiento es valido (esta dentro de los limites del tablero)
 void aplicar_movimiento(int, int, int, int); //genera movimientos en el tablero
 void deshacer_movimiento(int, int, int, int); //revierte un movimiento cuando no existen mas movimientos validos
@@ -24,7 +24,6 @@ int cantidad_movimientos = 0;
 int main() {
     //Leer la forma del tablero
     int i, j;
-    char linea[DIM + 2]; // +2 para '\n' y '\0'
 
     for (i = 0; i < DIM; i++) {
         for (j = 0; j < DIM; j++) {
@@ -33,17 +32,17 @@ int main() {
         tablero[i][0] = 'O';
     }
 
-    for (i = 1; i < DIM; i++) {
-        fgets(linea, sizeof(linea), stdin);
-        for (j = 1; j < DIM; j++) {
-            tablero[i][j] = linea[j - 1]; // leer desde linea[0] en adelante
+    for (i = 1; i <= 7; i++) {
+        for (j = 1; j <= 7; j++) {
+            scanf("%c", &tablero[i][j]);
             if (tablero[i][j] == ' ') {
-                tablero[i][j] = 'X'; // Casilla central
+                tablero[i][j] = 'X';
             }
         }
-    }   
+        scanf("%*c"); // Consumir el '\n' al final de cada línea
+    }
 
-    //mostrar_tablero();
+    mostrar_tablero();
 
     //Inicializar fichas en el tablero
     for (i = 1; i < DIM; i++) {
@@ -72,14 +71,14 @@ int main() {
     return 0;
 }
 
-/*void mostrar_tablero() {
+void mostrar_tablero() {
     for (int i = 1; i < DIM; i++) {
         for (int j = 1; j < DIM; j++) {
             printf("%c", tablero[i][j]);
         }
         printf("\n");
     }
-}*/
+}
 
 int es_movimiento_valido(int f1, int c1, int f2, int c2) {
     int f_medio = (f1 + f2) / 2;
