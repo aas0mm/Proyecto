@@ -3,7 +3,6 @@
 //  23 al 27 de octubre de 2025
 
 #include <stdio.h>
-#include <string.h>
 
 #define DIMENSION 8 // Dimensiones del tablero para poder guardarlo desde la posicion (1,1)
 
