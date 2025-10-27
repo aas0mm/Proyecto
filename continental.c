@@ -64,7 +64,7 @@ void leer_tablero(void) { //leemos el formato del tablero desde (1,1) a (7,7) y 
                 continue; //ignoramos saltos de linea
             }
             if (c == ' ') {
-                c = 'X';   // Transformar espacios en 'X'
+                c = 'X';   // validamos el espacio transformandolo en X
             }
             tablero[i][j] = c;
             j++;
