@@ -10,7 +10,7 @@
 typedef struct {
     int fila_origen, columna_origen;        
     int fila_destino, columna_destino;
-} Movimiento;
+} Movimiento; 
 
 //Declaracion de funciones
 void leer_tablero(void);
@@ -47,7 +47,7 @@ int main() {
     return 0;
 }
 
-void leer_tablero(void) {
+void leer_tablero(void) { //leemos el formato del tablero desde (1,1) a (7,7) y transformamos la fila y columna 0 en casillas invalidas
     int i, j;
     char c;
     // Marcar bordes como inválidos
@@ -61,7 +61,7 @@ void leer_tablero(void) {
         while (j <= 7) {
             scanf("%c", &c);
             if (c == '\n') {
-                continue; //ignora saltos de linea
+                continue; //ignoramos saltos de linea
             }
             if (c == ' ') {
                 c = 'X';   // Transformar espacios en 'X'
@@ -72,7 +72,7 @@ void leer_tablero(void) {
     }
 }
 
-void inicializar_fichas(void) {
+void inicializar_fichas(void) { // las casillas con fichas contienen un 1 y las casillas vacias contienen ceros
     int i, j;
 
     for (i = 1; i < DIMENSION; i++) {
@@ -124,7 +124,7 @@ void aplicar_movimiento(int f_origen, int c_origen, int f_destino, int c_destino
     cantidad_movimientos++;
 }
 
-void deshacer_movimiento(int f_origen, int c_origen, int f_destino, int c_destino) {
+void deshacer_movimiento(int f_origen, int c_origen, int f_destino, int c_destino) { //marcamos la posicion anterior de las fichas para anular cambios
     int f_medio = (f_origen + f_destino) / 2;
     int c_medio = (c_origen + c_destino) / 2;
 
@@ -155,7 +155,6 @@ int resolver(int fichas_restantes) {
     int fila, col;
     for (fila = 1; fila < DIMENSION; fila++) {
         for (col = 1; col < DIMENSION; col++) {
-            // Ordenar desplazamientos según cercanía al centro
             int desplazamientos_fila[4] = {0, 0, -2, 2};     // izquierda, derecha, arriba, abajo
             int desplazamientos_columna[4] = {-2, 2, 0, 0};
 
